@@ -8,6 +8,8 @@ import {
 } from 'react-router-dom';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './utils/firebase';
+
+import HomePage from './pages/HomePage';
 import AuthPage from './pages/AuthPage';
 import Dashboard from './pages/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -20,23 +22,24 @@ export default function App() {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
     });
-    return unsubscribe; // Cleanup subscription on unmount
+    return unsubscribe;
   }, []);
 
   return (
     <Router>
       <Routes>
+        <Route path="/" element={<HomePage />} />
         <Route
-          path="/"
+          path="/auth"
+          element={user ? <Navigate to="/dashboard" /> : <AuthPage />}
+        />
+        <Route
+          path="/dashboard"
           element={
             <ProtectedRoute user={user}>
               <Dashboard user={user} />
             </ProtectedRoute>
           }
-        />
-        <Route
-          path="/auth"
-          element={user ? <Navigate to="/" /> : <AuthPage />}
         />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>

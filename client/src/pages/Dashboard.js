@@ -5,14 +5,16 @@ import MoodHistory from '../components/MoodHistory';
 import Journal from '../components/Journal';
 import Articles from '../components/Article';
 import Doctors from '../components/Doctors';
-import DoctorHistory from '../components/DoctorsHistory'; // Import the DoctorHistory component
-import Sidebar from '../components/Sidebar'; // Sidebar component for navigation
+import DoctorHistory from '../components/DoctorsHistory';
+import Sidebar from '../components/Sidebar';
 import { getAuth, signOut } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
 
 export default function Dashboard({ user }) {
   const [moodHistory, setMoodHistory] = useState([]);
-  const [activeSection, setActiveSection] = useState('moodTracker'); // State for active tab
+  const [activeSection, setActiveSection] = useState('moodTracker');
   const auth = getAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (user) {
@@ -22,7 +24,13 @@ export default function Dashboard({ user }) {
   }, [user]);
 
   function handleLogout() {
-    signOut(auth);
+    signOut(auth)
+      .then(() => {
+        navigate('./HomePage.js'); // Redirect to homepage after logout
+      })
+      .catch((error) => {
+        console.error('Logout error:', error);
+      });
   }
 
   return (
@@ -57,7 +65,7 @@ export default function Dashboard({ user }) {
         {activeSection === 'journal' && <Journal user={user} />}
         {activeSection === 'articles' && <Articles />}
         {activeSection === 'doctors' && <Doctors />}
-        {activeSection === 'doctorHistory' && <DoctorHistory user={user} />} {/* Add DoctorHistory here */}
+        {activeSection === 'doctorHistory' && <DoctorHistory user={user} />}
       </main>
     </div>
   );
