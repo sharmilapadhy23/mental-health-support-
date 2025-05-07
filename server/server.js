@@ -21,4 +21,4 @@ app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 app.get('/', (req, res) => {
     res.send('Mental Health Support API is running');
   });
-app.use('/api/doctors', require('./routes/doctorRoutes'));
+app.use('/api/doctors', require('./routes/DoctorsRoutes'));
